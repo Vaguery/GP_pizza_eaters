@@ -17,8 +17,3 @@ Feature: Pizza
     Then the pizza should not be whole
     And the left slice should weigh 7
     And the right slice should weigh 5
-  
-  Scenario: you can eat the left or right pieces only
-  
-  
-  

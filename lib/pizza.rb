@@ -11,6 +11,10 @@ class Pizza
     whole
   end
 
+  def weight
+    @slices.inject(0) {|sum,w| sum+w}
+  end
+
   def eat_first_slice(which)
     open_circle = @slices[which+1..-1] + @slices[0...which]
     @slices = open_circle

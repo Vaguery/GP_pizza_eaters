@@ -32,7 +32,7 @@ Then /^there should be (\d+) slices$/ do |count|
 end
 
 Then /^the pizza should weigh (\d+)$/ do |weight|
-  @pizza.slices.inject(0) {|sum,s| sum+s}.should == weight.to_f
+  @pizza.weight.should == weight.to_f
 end
 
 Then /^the pizza should be whole$/ do

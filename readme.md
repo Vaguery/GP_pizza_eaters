@@ -16,7 +16,7 @@ See, I've been writing [this book](https://leanpub.com/pragmaticGP), and there a
 
 So this is me thinking in Ruby about one of those little side-projects.
 
-I've also recently been watching [Lee Spector's explanations of Tag Space Machines](https://hampedia.org/wiki/File:Tsm.pdf) unfold. Tag Space Machines (TSMs) are a representation scheme for GP languages he's implented in his lab's work. I think I may work with TSMs here.
+I've also recently been watching [Lee Spector's explanations of Tag Space Machines](https://hampedia.org/wiki/File:Tsm.pdf) unfold. Tag Space Machines (TSMs) are a representation scheme for GP languages he's implemented in his lab's work. I think I may work with TSMs here.
 
 ## Pizza
 
@@ -38,4 +38,4 @@ Might this approach work? I have no idea. It *feels* as though it has some flexi
 
 ## Trying it and see
 
-Further updates on the progress of the project will be posted at my [Pragmatic GP](http://www.vagueinnovation.com/pragmatic_gp/) blog.
+Further updates on the progress of the project will be posted at my [Pragmatic GP](http://www.vagueinnovation.com/pragmatic_gp/) blog. Code will be posted here, of course.
