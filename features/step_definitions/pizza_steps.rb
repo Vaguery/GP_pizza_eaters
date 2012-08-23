@@ -11,10 +11,6 @@ Given /^the pizza is sliced into (\[.+\])$/ do |slices|
   @pizza.slice eval(slices)
 end
 
-Given /^no pieces have been eaten$/ do
-  @pizza.whole = true
-end
-
 
 
 When /^I slice the pizza$/ do

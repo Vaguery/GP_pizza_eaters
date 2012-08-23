@@ -12,7 +12,6 @@ Feature: Pizza
   
   Scenario: eating the first slice unfolds the circle
     Given the pizza is sliced into [1,2,3,4,5,6,7,8]
-    And no pieces have been eaten
     When I take out piece 6
     Then the pizza should not be whole
     And the left slice should weigh 7
