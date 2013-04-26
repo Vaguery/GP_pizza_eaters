@@ -12,21 +12,21 @@ module PizzaEaters
 
     def choose_first_piece(pizza)
       scores = score_pizza(pizza)
-      tastiest = scores.max
-      choices = (0..scores.length).select {|idx| scores[idx] == tastiest}
+      biggest_score = scores.max
+      choices = (0...scores.length).select {|idx| scores[idx] == biggest_score}
       pizza.eat_first_slice(choices.sample)
     end
 
     
     def score_pizza(pizza)
       scores = pizza.slices.collect do |slice|
-        score_one_slice(pizza,slice)
+        score_as_first(pizza,slice)
       end
       scores
     end    
 
 
-    def score_one_slice(pizza,slice)
+    def score_as_first(pizza,slice)
       Random.rand()
     end
   end

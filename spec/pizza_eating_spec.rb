@@ -27,24 +27,35 @@ describe "players" do
     describe "eating the first slice" do
       before(:each) do
         @simple = PizzaEaters::Pizza.new([1,2,3,4,5])
+        @andi = PizzaEaters::Player.new
       end
 
       it "should score every slice in the pizza" do
-        andi = PizzaEaters::Player.new
-        andi.should_receive(:score_pizza).with(@simple).and_return([1,2,3,4,5])
-        andi.choose_first_piece(@simple)
+        @andi = PizzaEaters::Player.new
+        @andi.should_receive(:score_pizza).with(@simple).and_return([1,2,3,4,5])
+        @andi.choose_first_piece(@simple)
       end
 
-      it "should run its first_choice script for every slice"
+      it "should run its first_choice script for every slice" do
+        @andi.should_receive(:score_as_first).with(@simple,kind_of(Numeric)).exactly(5).times
+        @andi.choose_first_piece(@simple)
+      end
 
       it "should pick the first slice based on the highest score it determines" do
-        andi = PizzaEaters::Player.new
-        andi.stub(:score_pizza).and_return([1,2,5,4,3])
-        andi.choose_first_piece(@simple)
+        @andi.stub(:score_pizza).and_return([0,0,9,0,0]) # scores
+        @andi.choose_first_piece(@simple)
         @simple.should_not be_whole
         @simple.slices.should == [4,5,1,2]
       end
+
+      it "should work" do
+        p = PizzaEaters::Pizza.new( [:a,:b,:c,:d] )
+        @andi.choose_first_piece( p )
+        p.slices.length.should == 3
+      end
     end
+
+
 
 
     describe "eating subsequent slices" do
