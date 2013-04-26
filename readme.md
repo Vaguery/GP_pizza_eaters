@@ -1,4 +1,14 @@
-# Applying GP to Winkler's Pizza Eating Game
+# Applying GP to Peter Winkler's Pizza Eating Game
+
+## Project maturity
+
+in progress, unfinished, underway, confusing
+
+## What to do
+
+watch, nag, ask
+
+## Abstract
 
 A recent [arXiv preprint entitled "How to eat 4/9 of a Pizza"](http://arxiv.org/abs/0812.2870) caught my eye. It's an interesting little answer to a challenge from game theory (and geometry, I suppose) posed by [Peter Winkler](http://www.math.dartmouth.edu/~pw/), who's a constant source of inspiration.
 
