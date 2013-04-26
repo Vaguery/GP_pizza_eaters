@@ -16,3 +16,15 @@ Feature: Pizza
     Then the pizza should not be whole
     And the left slice should weigh 7
     And the right slice should weigh 5
+    
+  Scenario: eating left and right slices
+    Given the pizza is sliced into [0,2,4,6,8,1,3,5,7,9]
+    When I take out piece 1
+    And I eat a left piece
+    And I eat a right piece
+    And I eat a right piece
+    Then the left slice should weigh 7
+    And the right slice should weigh 6
+  
+  
+  
