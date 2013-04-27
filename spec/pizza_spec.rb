@@ -23,6 +23,35 @@ end
 
 
 describe "eating" do
+  describe "eat_slice" do
+    before(:each) do
+      @pizza = PizzaEaters::Pizza.new([0,1,2,3,4])
+    end
+
+    it "should eat_first_slice if the pizza is whole" do
+      @pizza.should_receive(:eat_first_slice).with(1)
+      @pizza.eat_slice(1)
+    end
+
+    it "should eat_left_slice if the pizza is not whole and the arg is 0" do
+      @pizza.eat_first_slice(3)
+      @pizza.should_receive(:eat_left_slice)
+      @pizza.eat_slice(0)
+    end
+
+    it "should eat_right_slice if the pizza is not whole and the arg is slice count - 1" do
+      @pizza.eat_first_slice(1)
+      @pizza.should_receive(:eat_right_slice)
+      @pizza.eat_slice(3)
+    end
+
+    it "should raise an ArgumentError if the pizza isn't whole and the slice eaten isn't an end piece" do
+      @pizza.eat_first_slice(1)
+      lambda{ @pizza.eat_slice(2) }.should raise_error(ArgumentError)
+    end
+  end
+
+
   describe "eat_first_slice" do
     it "should remove the indicated slice (by index) and unfold the notionally circular whole array" do
       big = PizzaEaters::Pizza.new([1,2,3,4,5,6])

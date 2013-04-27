@@ -4,7 +4,7 @@ require 'spec_helper'
 describe "players" do
   describe "initialization" do
     describe "first piece function" do
-      it "should have a script for the first piece" do
+      it "should have a script to grade the first piece it eats" do
         PizzaEaters::Player.new.first_script.should_not be_nil
       end
 
@@ -13,8 +13,8 @@ describe "players" do
       end
     end
 
-    describe "more pieces function" do
-      it "should have a script for the later pieces" do
+    describe "main script" do
+      it "should have a script to grade the later pieces it eats" do
         PizzaEaters::Player.new.main_script.should_not be_nil
       end
 
@@ -35,32 +35,40 @@ describe "players" do
       @andi = PizzaEaters::Player.new
     end
 
-    it "should score the pizza slices" do
-      @andi = PizzaEaters::Player.new
-      @andi.should_receive(:score_pizza).with(@pizza).and_return([0,1,2,3,4,5])
+    it "should create a new Interpreter" do
+      expected_result = PizzaEaters::Interpreter.new(@pizza)
+      PizzaEaters::Interpreter.should_receive(:new).with(@pizza).and_return(expected_result)
       @andi.eat_tastiest_piece(@pizza)
     end
 
-    it "should call score_slice for each slice" do
-      @andi.should_receive(:score_slice).with(@pizza,kind_of(Numeric)).exactly(6).times
+    it "should run the first_script if the pizza is whole" do
       @andi.eat_tastiest_piece(@pizza)
     end
 
     it "should pick a slice from a whole pizza based on the highest score it determines" do
-      @andi.stub(:score_pizza).and_return([0,0,4,0,0,0])
+      @andi.stub(:tastiest_piece).and_return(2)
       @andi.eat_tastiest_piece(@pizza)
       @pizza.should_not be_whole
       @pizza.slices.should == [3,4,5,0,1]
     end
 
+    it "should never produce nil values as scores" do
+      @andi.first_script = ""
+      @andi.main_script = ""
+      @andi.slice_scores(@pizza).should_not include(nil)
+    end
+
     it "should only pick the left or right slice from a partially eaten pizza" do
       @pizza.eat_first_slice(2)
-      @pizza.should_not be_whole
-      @pizza.slices.should == [3,4,5,0,1]
+      # @pizza.slices.should == [3,4,5,0,1]
 
-      @andi.stub(:score_pizza).and_return([9,0,0,0,1])
+      @andi.main_script = "weight"
       @andi.eat_tastiest_piece(@pizza)
-      @pizza.slices.should == [4,5,0,1]
+      @pizza.slices.should == [4,5,0,1] # ate the highest-scoring end one, not the highest overall
+
+      @andi.main_script = "0.0 weight - "
+      @andi.eat_tastiest_piece(@pizza)
+      @pizza.slices.should == [4,5,0] # ate the highest-scoring end one, not the highest overall
     end
 
     it "should shrink a whole pizza as expected" do
@@ -74,28 +82,28 @@ describe "players" do
       p.eat_first_slice(2)
       p.slices.should == [3,4,5,0,1]
 
-      @andi.stub(:score_pizza).and_return([0,0,0,0,9])
+      @andi.stub(:tastiest_piece).and_return([0])
       @andi.eat_tastiest_piece(p)
       p.slices.should == [3,4,5,0]
 
-      @andi.stub(:score_pizza).and_return([9,0,0,0])
+      @andi.stub(:tastiest_piece).and_return([3])
       @andi.eat_tastiest_piece(p)
-      p.slices.should == [4,5,0]
+      p.slices.should == [3,4,5]
     end
 
     it "should gain weight equal to the eaten pieces" do
       p = PizzaEaters::Pizza.new( [0,1,2,3,4,5] )
-      @andi.stub(:score_pizza).and_return([0,1,2,3,4,5])
+      @andi.first_script = "weight"
       @andi.eat_tastiest_piece(p)
       p.slices.should == [0,1,2,3,4]
       @andi.weight_eaten.should == 5
 
-      @andi.stub(:score_pizza).and_return([0,0,0,0,1])
+      @andi.main_script = "weight"
       @andi.eat_tastiest_piece(p)
       p.slices.should == [0,1,2,3]
       @andi.weight_eaten.should == 9
 
-      @andi.stub(:score_pizza).and_return([1,0,0,0])
+      @andi.main_script = "0 weight -"
       @andi.eat_tastiest_piece(p)
       p.slices.should == [1,2,3]
       @andi.weight_eaten.should == 9
@@ -106,25 +114,20 @@ describe "players" do
   describe "running scripts" do
     before(:each) do
       @pizza = PizzaEaters::Pizza.new([0,1,2,3,4])
-      @abby = PizzaEaters::Player.new(first_script:"rand",main_script:"")
-    end
-
-    it "should clear the stack" do
-      @abby.should_receive(:reset_stack)
-      @abby.score_slice(@pizza,2)
+      @abby = PizzaEaters::Player.new(first_script:"weight",main_script:"0 weight -")
     end
 
     it "should execute the first_script when the pizza is whole" do
-      @abby.first_script.should_receive(:split).and_return(["rand"])
-      @abby.main_script.should_not_receive(:split)
-      @abby.score_slice(@pizza,2)
+      @abby.eat_tastiest_piece(@pizza)
+      @pizza.slices.should == [0,1,2,3]
     end
 
     it "should execute the main_script when the pizza is not whole" do
-      @pizza.eat_first_slice(3)
-      @abby.first_script.should_not_receive(:split)
-      @abby.main_script.should_receive(:split).and_return([""])
-      @abby.score_slice(@pizza,2)
+      @pizza.eat_first_slice(2)
+      @pizza.slices.should == [3, 4, 0, 1]
+      @pizza.should_not be_whole
+      @abby.eat_tastiest_piece(@pizza)
+      @pizza.slices.should == [3,4,0]
     end
   end
 

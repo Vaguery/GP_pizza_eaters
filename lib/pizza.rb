@@ -1,16 +1,79 @@
 module PizzaEaters
+  class Interpreter
+    attr_accessor :stacks
+    attr_reader :pizza
+
+
+    def initialize(pizza)
+      @pizza = pizza
+    end
+
+
+    def run(script)
+      @stacks = pizza.slices.length.times.collect {Array.new}
+      tokens = script.strip.split
+      tokens.each do |t|
+        interpret_token(t)
+      end
+    end
+
+
+    def interpret_token(token)
+      case token
+      when "rand"
+        stacks.each {|s| s.push Random.rand()}
+      when "weight"
+        stacks.each_with_index {|s,idx| s.push @pizza.slices[idx].to_f}
+      when "total_weight"
+        wt = @pizza.weight
+        stacks.each {|s| s.push wt.to_f}
+      when "index"
+        stacks.each_with_index {|s,idx| s.push idx.to_f}
+      when "slices"
+        stacks.each {|s| s.push @pizza.slices.length.to_f}
+      when /-?\d+.?\d*/
+        stacks.each {|s| s.push token.to_f}
+      when "dup"
+        stacks.each {|s| s.push(s[-1]) unless s.empty?}
+      when "swap"
+        stacks.each {|s| s[-1],s[-2] = s[-2],s[-1] unless s.length < 2}
+      when "+"
+        stacks.each {|s| s.push(s.pop + s.pop) unless s.length < 2}
+      when "-"
+        stacks.each {|s| s.push(-s.pop + s.pop) unless s.length < 2}
+      when "*"
+        stacks.each {|s| s.push(s.pop * s.pop) unless s.length < 2}
+      when "/"
+        stacks.each do |s| 
+          unless s.length < 2
+            a,b = s.pop(2)
+            s.push (b == 0.0 ? 1.0 : a/b)
+          end
+        end
+      when "left"
+        top_items = stacks.collect {|s| s[-1]}.rotate(-1)
+        stacks.each_with_index {|s,idx| s.push top_items[idx] unless top_items[idx].nil?}
+      when "right"
+        top_items = stacks.collect {|s| s[-1]}.rotate(1)
+        stacks.each_with_index {|s,idx| s.push top_items[idx] unless top_items[idx].nil?}
+      else
+        # do nothing
+      end
+    end
+  end
+
+
+
   class Player 
-    attr_reader :first_script
-    attr_reader :main_script
-    attr_accessor :stack
+    attr_accessor :first_script
+    attr_accessor :main_script
     attr_accessor :weight_eaten
 
 
     def initialize(args={})
       @first_script = args[:first_script] || ""
       @main_script = args[:main_script] || ""
-      @stack=[]
-      @weight_eaten = 0
+      @weight_eaten = 0.0
     end
 
 
@@ -35,45 +98,19 @@ module PizzaEaters
     end
 
 
+    def slice_scores(pizza)
+      evaluator = Interpreter.new(pizza)
+      pizza.whole? ? evaluator.run(@first_script) : evaluator.run(@main_script)
+      return evaluator.stacks.collect {|s| s[-1] || 0.0}
+    end
+
+
     def tastiest_piece(pizza)
-      scores = score_pizza(pizza)
-      possibilities = pizza.whole? ? (0...scores.length) : [0,-1]
+      scores = slice_scores(pizza)
+      possibilities = pizza.whole? ? (0...scores.length) : [0,scores.length-1]
       highest_score = pizza.whole? ? scores.max : [scores[0],scores[-1]].max
       indices_of_winners = possibilities.select {|idx| scores[idx] == highest_score}
       return indices_of_winners.sample
-    end
-
-    
-    def score_pizza(pizza)
-      scores = pizza.slices.collect do |slice|
-        score_slice(pizza,slice)
-      end
-      scores
-    end    
-
-
-    def reset_stack
-      @stack=[]
-    end
-
-
-    def run_script(pizza,slice)
-      reset_stack
-      tokens = pizza.whole? ? @first_script.split : @main_script.split
-      tokens.each do |token|
-        case token
-        when "rand"
-          @stack.push Random.rand()  
-        else
-          # ignore it
-        end
-      end
-    end
-
-
-    def score_slice(pizza,slice)
-      run_script(pizza,slice)
-      return @stack[-1]
     end
   end
 
@@ -98,6 +135,19 @@ module PizzaEaters
 
     def weight
       @slices.inject(0) {|sum,w| sum+w}
+    end
+
+    def eat_slice(which)
+      case 
+      when self.whole?
+        eat_first_slice(which)
+      when which == 0
+        eat_left_slice
+      when which == @slices.length - 1
+        eat_right_slice
+      else
+        raise ArgumentError.new "Impolite pizza eating: cannot take slice ##{which+1} out of #{@slices.length}"
+      end
     end
 
     def eat_first_slice(which)
