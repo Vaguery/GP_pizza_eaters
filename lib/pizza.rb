@@ -85,15 +85,7 @@ module PizzaEaters
 
 
     def eat_that_slice(pizza,index)
-      size_of_slice = 
-        case
-        when pizza.whole?
-          pizza.eat_first_slice(index)
-        when index == 0
-          pizza.eat_left_slice
-        else
-          pizza.eat_right_slice
-        end
+      size_of_slice = pizza.eat_slice(index)
       @weight_eaten += size_of_slice
     end
 
@@ -120,25 +112,30 @@ module PizzaEaters
     attr_accessor :slices
     attr_accessor :whole
 
+
     def initialize(size_array=[1])
       @slices = size_array
       @whole = true
     end
 
+
     def whole?
       whole
     end
+
 
     def eaten_all_up?
       @slices.empty?
     end
 
+
     def weight
       @slices.inject(0) {|sum,w| sum+w}
     end
 
+
     def eat_slice(which)
-      case 
+      return case 
       when self.whole?
         eat_first_slice(which)
       when which == 0
@@ -150,6 +147,7 @@ module PizzaEaters
       end
     end
 
+
     def eat_first_slice(which)
       eaten = @slices[which]
       open_circle = @slices[which+1..-1] + @slices[0...which]
@@ -158,9 +156,11 @@ module PizzaEaters
       return eaten
     end
 
+
     def eat_left_slice
       @slices.shift
     end
+
 
     def eat_right_slice
       @slices.pop

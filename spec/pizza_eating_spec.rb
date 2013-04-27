@@ -82,13 +82,13 @@ describe "players" do
       p.eat_first_slice(2)
       p.slices.should == [3,4,5,0,1]
 
-      @andi.stub(:tastiest_piece).and_return([0])
+      @andi.stub(:tastiest_piece).and_return(0)
       @andi.eat_tastiest_piece(p)
-      p.slices.should == [3,4,5,0]
+      p.slices.should == [4,5,0,1]
 
-      @andi.stub(:tastiest_piece).and_return([3])
+      @andi.stub(:tastiest_piece).and_return(3)
       @andi.eat_tastiest_piece(p)
-      p.slices.should == [3,4,5]
+      p.slices.should == [4,5,0]
     end
 
     it "should gain weight equal to the eaten pieces" do
