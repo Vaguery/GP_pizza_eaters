@@ -68,6 +68,29 @@ Once the first slice is eaten, the choice for Bob (and Alice, later) is simpler:
 
 Might this approach work? I have no idea. It *feels* as though it has some flexibility. We'll see.
 
-## Trying it and see
+## The `Taste` language
 
-Further updates on the progress of the project will be posted at my [Pragmatic GP](http://www.vagueinnovation.com/pragmatic_gp/) blog. Code will be posted here, of course.
+The pizza-eating agents have a relatively trivial language they can use to make their decisions about which piece of a given pizza is "tastiest"---that is, their next pick.
+
+To make the decision, they create an empty stack for each slice, and run the script simultaneously (one token at a time) in each context. The tokens in the language (so far) are:
+
+- **constants**: integer and float constants appearing in their scripts are simply pushed to the stack
+- `rand`: pushes a random number in [0,1]
+- `weight`: pushes the weight of the slice in question
+- `total_weight`: pushes the *current* total pizza weight
+- `index`:pushes the *current* index of the slice in question (0-based)
+- `slices`: pushes the *current* number of remaining slices in the whole pizza
+- `dup`: pushes a copy of the top number on the stack
+- `swap`: exchanges the top two values on the stack
+- `+`: pops the top two values on the stack and pushes their sum
+- `-`: pops the top two values and pushes their difference
+- `*`: ...their product
+- `/`: ...their quotient; if the divisor is 0.0, the result is 1.0
+- `left`: pushes a copy of the topmost item on the stack to the left of the current stack (modulo the number of slices)
+- `right`: pushes a copy of the topmost item on the stack to the right of the current stack (modulo the number of slices)
+
+If at any point an argument is missing, nothing happens.
+
+The script is run simultaneously for each slice of pizza, and the topmost values are collected (or 0.0, if a given stack is empty) when polled. If there are multiple slices with the same maximum tastiness, one of those is chosen at random with uniform probability.
+
+The *tastiest* piece of pizza is the one with the highest score. In the first move a game, any piece may be chosen. In all subsequent moves, only the two slices adjacent to the (growing) gap can be taken.
