@@ -138,4 +138,13 @@ describe "players" do
       a.weight_eaten.should == 333
     end
   end
+
+
+  describe "eating an empty pizza" do
+    it "should raise an ArgumentError if attempted" do
+      p = PizzaEaters::Pizza.new([])
+      a = PizzaEaters::Player.new
+      lambda{ a.eat_tastiest_piece(p) }.should raise_error(ArgumentError)
+    end
+  end
 end

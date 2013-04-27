@@ -15,6 +15,7 @@ module PizzaEaters
 
 
     def eat_tastiest_piece(pizza)
+      raise(ArgumentError.new "This pizza is empty!?") if pizza.slices.empty?
       selection = tastiest_piece(pizza)
       eat_that_slice(pizza,selection)
     end

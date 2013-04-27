@@ -8,9 +8,20 @@ in progress, unfinished, underway, confusing
 
 watch, nag, ask
 
-## Abstract
+## What's going on
 
 A recent [arXiv preprint entitled "How to eat 4/9 of a Pizza"](http://arxiv.org/abs/0812.2870) caught my eye. It's an interesting little answer to a challenge from game theory (and geometry, I suppose) posed by [Peter Winkler](http://www.math.dartmouth.edu/~pw/), who's a constant source of inspiration.
+
+The first goal of this project is to reproduce the "game" described in the paper (see below). But in this case, instead of working with analytical models of strategy and proof, we'll be constructing actual "pizza-eating agents" that have *strategies* for picking pizza. Our agents' strategies will feel nothing like the sort of economics-and-rationality stuff you might expect from a game theory project, but what we'll do is try to *evolve* strategies that do well enough to compare to the theoretically-defined ones from the arXiv preprint.
+
+That replication of simple work is interesting for a few reasons.
+
+- One never knows what sort of representations are comparable, necessary or sufficient. So we'll be exploring the *ontology* of tactical pizza-eating.
+- Nobody seems to have asked the pizza what it thinks. As we search for improved pizza-eating behavior from our agents, we'll *also* be able to consider what a "simple" and a "hard" pizza are, in the context of the strategies that arise.
+- The original puzzle/game has a few obvious "edges" we could step beyond: What if pizza pieces can take "negative weights"? What if there are three or more players? What if the players are fighting over a two-dimensional sheet cake instead of a pizza? And so on.
+- There are a number of auxiliary results, like the "guaranteed" scores for optimal strategies when there are no "infinitesimal" slices, and so on.
+
+In the end, it's a useful exercise in building and exploring an agent-based model of a formal mathematical system, and looking at a problem from a variety of viewpoints.
 
 ## Hungry, Hungry Alice & Bob
 
