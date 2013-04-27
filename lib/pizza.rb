@@ -36,7 +36,7 @@ module PizzaEaters
     attr_accessor :slices
     attr_accessor :whole
 
-    def initialize(size_array)
+    def initialize(size_array=[1])
       @slices = size_array
       @whole = true
     end
@@ -45,22 +45,30 @@ module PizzaEaters
       whole
     end
 
+    def eaten_all_up?
+      @slices.empty?
+    end
+
     def weight
       @slices.inject(0) {|sum,w| sum+w}
     end
 
     def eat_first_slice(which)
+      eaten = @slices[which]
       open_circle = @slices[which+1..-1] + @slices[0...which]
       @slices = open_circle
       @whole = false
+      return eaten
     end
 
-    def left_slice
-      @slices[0]
+    def eat_left_slice
+      eaten = @slices.shift
+      return eaten
     end
 
-    def right_slice
-      @slices[-1]
+    def eat_right_slice
+      eaten = @slices.pop
+      return eaten
     end
   end
 end
