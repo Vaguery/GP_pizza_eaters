@@ -82,12 +82,14 @@ To make the decision, they create an empty stack for each slice, and run the scr
 - `slices`: pushes the *current* number of remaining slices in the whole pizza
 - `dup`: pushes a copy of the top number on the stack
 - `swap`: exchanges the top two values on the stack
+- `depth`: pushes the current stack depth
+- `pop`: throws away the topmost item of the stack
 - `+`: pops the top two values on the stack and pushes their sum
 - `-`: pops the top two values and pushes their difference
 - `*`: ...their product
 - `/`: ...their quotient; if the divisor is 0.0, the result is 1.0
-- `left`: pushes a copy of the topmost item on the stack to the left of the current stack (modulo the number of slices)
-- `right`: pushes a copy of the topmost item on the stack to the right of the current stack (modulo the number of slices)
+- `left`: pushes a copy of the topmost item on the stack to the left of the current stack; if the pizza is whole, it "wraps", otherwise it pushes nothing to the leftmost piece's stack
+- `right`: pushes a copy of the topmost item on the stack to the right of the current stack; if the pizza is whole, it "wraps", otherwise it pushes nothing to the rightmost piece's stack
 
 If at any point an argument is missing, nothing happens.
 
