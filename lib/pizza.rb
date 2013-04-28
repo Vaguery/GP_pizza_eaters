@@ -37,6 +37,10 @@ module PizzaEaters
         stacks.each {|s| s.push(s[-1]) unless s.empty?}
       when "swap"
         stacks.each {|s| s[-1],s[-2] = s[-2],s[-1] unless s.length < 2}
+      when "depth"
+        stacks.each {|s| s.push s.length.to_f}
+      when "pop"
+        stacks.each {|s| s.pop}
       when "+"
         stacks.each {|s| s.push(s.pop + s.pop) unless s.length < 2}
       when "-"
@@ -51,13 +55,27 @@ module PizzaEaters
           end
         end
       when "left"
-        top_items = stacks.collect {|s| s[-1]}.rotate(-1)
-        stacks.each_with_index {|s,idx| s.push top_items[idx] unless top_items[idx].nil?}
+        top_left = peek(-1)
+        stacks.each_with_index { |s,idx| s.push top_left[idx] unless top_left[idx].nil? }
       when "right"
-        top_items = stacks.collect {|s| s[-1]}.rotate(1)
-        stacks.each_with_index {|s,idx| s.push top_items[idx] unless top_items[idx].nil?}
+        top_right = peek(+1)
+        stacks.each_with_index { |s,idx| s.push top_right[idx] unless top_right[idx].nil? }
       else
         # do nothing
+      end
+    end
+
+
+    def peek(offset)
+      indices = (0...@pizza.slices.length)
+      indices.collect do |idx|
+        if @pizza.whole?
+          where = (idx + offset) % @pizza.slices.length
+          @stacks[where][-1]
+        else
+          where = idx + offset
+          indices.include?(where) ? @stacks[where][-1] : nil
+        end
       end
     end
   end

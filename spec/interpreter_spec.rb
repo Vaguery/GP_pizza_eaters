@@ -191,12 +191,23 @@ describe "Interpreter" do
     describe "left" do
       it "should push a copy of the topmost item on the stack to the 'left'" do
         @sliced_4_ways.run("index left")
+        @pizza.should be_whole
         @sliced_4_ways.stacks.each_with_index {|s,idx| s[-1].should == (idx.to_f - 1.0) % 4.0}
       end
 
       it "should ignore nil items" do
         @sliced_4_ways.run("left")
         @sliced_4_ways.stacks.each {|s| s.length.should == 0}
+      end
+
+      it "should treat the pizza as circular if it's whole, or linear otherwise" do
+        @sliced_4_ways.run("index left")
+        @sliced_4_ways.stacks[0][-1].should == 3.0 # it wraps around the circle
+        
+        @pizza.eat_first_slice(2)
+        @pizza.slices.should == [4,1,2]
+        @sliced_4_ways.run("index left")
+        @sliced_4_ways.stacks.should == [[0.0], [1.0, 0.0], [2.0, 1.0]]
       end
     end
 
@@ -210,7 +221,34 @@ describe "Interpreter" do
         @sliced_4_ways.run("right")
         @sliced_4_ways.stacks.each {|s| s.length.should == 0}
       end
+
+      it "should treat the pizza as circular if it's whole, or linear otherwise" do
+        @sliced_4_ways.run("index right")
+        @sliced_4_ways.stacks[3][-1].should == 0.0 # it wraps around the circle
+        
+        @pizza.eat_first_slice(2)
+        @pizza.slices.should == [4,1,2]
+        @sliced_4_ways.run("index right")
+        @sliced_4_ways.stacks.should == [[0.0, 1.0], [1.0, 2.0], [2.0]]
+      end
     end
+
+    describe "depth" do
+      it "should push the number of items currently on the stack" do
+        @pizza.eat_first_slice(2)
+        @sliced_4_ways.run("1 left left depth")
+        @sliced_4_ways.stacks.should ==
+          [[1.0, 1.0], [1.0, 1.0, 1.0, 3.0], [1.0, 1.0, 1.0, 3.0]]
+      end
+    end
+
+    describe "pop" do
+      it "should throw away the topmost item from the stack" do
+        @sliced_4_ways.run("1 2 pop")
+        @sliced_4_ways.stacks.should == [[1.0], [1.0], [1.0], [1.0]]
+      end
+    end
+
 
     describe "gibberish" do
       it "should ignore tokens it can't recognize" do
