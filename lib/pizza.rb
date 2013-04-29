@@ -60,6 +60,12 @@ module PizzaEaters
       when "right"
         top_right = peek(+1)
         stacks.each_with_index { |s,idx| s.push top_right[idx] unless top_right[idx].nil? }
+      when "<"
+        stacks.each {|s| s.push(s.pop > s.pop ? 1.0 : 0.0) unless s.length < 2}
+      when ">"
+        stacks.each {|s| s.push(s.pop < s.pop ? 1.0 : 0.0) unless s.length < 2}
+      when "=="
+        stacks.each {|s| s.push(s.pop == s.pop ? 1.0 : 0.0) unless s.length < 2}
       else
         # do nothing
       end

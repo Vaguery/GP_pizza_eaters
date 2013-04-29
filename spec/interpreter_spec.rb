@@ -249,6 +249,26 @@ describe "Interpreter" do
       end
     end
 
+    describe "<" do
+      it "should push 1.0 if the top stack item is bigger than the second one" do
+        @sliced_4_ways.run("index 2 <")
+        @sliced_4_ways.stacks.should == [[1.0], [1.0], [0.0], [0.0]]
+      end
+    end
+
+    describe ">" do
+      it "should push 1.0 if the top stack item is smaller than the second one" do
+        @sliced_4_ways.run("index 2 >")
+        @sliced_4_ways.stacks.should == [[0.0], [0.0], [0.0], [1.0]]
+      end
+    end
+
+    describe "==" do
+      it "should push 1.0 if the top stack item is identical to the second one" do
+        @sliced_4_ways.run("index 2 ==")
+        @sliced_4_ways.stacks.should == [[0.0], [0.0], [1.0], [0.0]]
+      end
+    end
 
     describe "gibberish" do
       it "should ignore tokens it can't recognize" do
