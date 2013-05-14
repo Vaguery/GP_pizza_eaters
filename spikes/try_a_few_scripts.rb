@@ -5,7 +5,8 @@ require_relative '../lib/pizza'
   "dup", "swap",
   "+", "-", "*", "/",
   "pop","depth",
-  "left", "right"]
+  "left", "right",
+  "<", ">", "=="]
 
 def random_script(length)
   length.times.inject("") do |script,token|
